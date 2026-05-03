@@ -1,0 +1,36 @@
+# Copy this file to config.toml and fill in your values.
+# config.toml is gitignored — it holds host-specific paths.
+
+[source]
+# Block devices to inspect. Get these from `lsblk` after plugging in the
+# SATA-to-USB adapter. Order doesn't matter for RAID 1; does for RAID 0/JBOD.
+devices = ["/dev/sdb", "/dev/sdc"]
+
+[mount]
+# Where to mount the assembled, read-only NAS filesystem.
+mountpoint = "/mnt/nas_old"
+# md device node to use when assembling. Pick something not already in use.
+md_device = "/dev/md127"
+# Extra mount options (comma-separated). "noload" skips ext journal replay,
+# which is forensic-friendly. Drop it if the source filesystem is xfs.
+mount_options = "ro,noload"
+
+[target]
+# Synology DS223 over SSH.
+host = ""                      # e.g. "192.168.1.50" or "syno.local"
+user = "admin"
+remote_path = "/volume1/recovered/"
+
+[copy]
+log_dir = "logs"
+# Excluded from rsync. Add NAS-internal cruft you don't want to copy.
+excludes = [
+    "lost+found",
+    ".@thumb",        # Thecus thumbnail cache
+    ".system",        # Thecus system metadata
+    "@eaDir",         # Synology metadata, just in case
+]
+
+[verify]
+# How many random files to spot-check with sha256.
+sample_size = 25

@@ -69,3 +69,7 @@ dmypy.json
 
 # Logs
 *.log
+logs/
+
+# Local config (host-specific)
+config.toml
